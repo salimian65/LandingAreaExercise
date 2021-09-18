@@ -15,7 +15,7 @@ namespace LandingPlatform.Domain.Platforms
 
         private readonly Position bottomRightCorner;
 
-        private readonly object syncObject = new();
+        private static readonly object syncObject = new();
 
         private Position latestReservedPosition;
 
@@ -27,11 +27,11 @@ namespace LandingPlatform.Domain.Platforms
             this.bottomRightCorner = bottomRightCorner;
         }
 
-        public string IsAbleForLanding(Position position)
+        public string GetLandingStatus(Position position)
         {
             MakeSurePositionIsNotNull(position);
 
-            if (IsInSidePlatform(position)) return OutOfPlatform;
+            if (IsOutsidePlatform(position)) return OutOfPlatform;
 
             lock (syncObject)
             {
@@ -50,7 +50,7 @@ namespace LandingPlatform.Domain.Platforms
             if (position == null) throw new ArgumentNullException(nameof(position));
         }
 
-        private bool IsInSidePlatform(Position position)
+        private bool IsOutsidePlatform(Position position)
         {
             return position < topLefCorner || position > bottomRightCorner;
         }

@@ -15,10 +15,10 @@ namespace LandingPlatform.Domain.UnitTests
         private readonly PlatformBuilder platformBuilder = new();
 
         [Fact]
-        public void Should_return_Ok_for_landing()
+        public void Returns_oKForLanding_when_asks_for_position_5_5()
         {
             //Arrange
-            var coordinate = new Position(6, 6);
+            var coordinate = new Position(5, 5);
             var sut = platformBuilder
                 .WithTopLeftX(5)
                 .WithTopLeftY(5)
@@ -26,16 +26,16 @@ namespace LandingPlatform.Domain.UnitTests
                 .WithBottomRightY(10)
                 .Build();
             //Act
-            var result = sut.IsAbleForLanding(coordinate);
+            var result = sut.GetLandingStatus(coordinate);
             //Assert
             result.Should().Be(OkForLanding);
         }
 
         [Fact]
-        public void Should_return_Out_of_platform()
+        public void Returns_outOfPlatform_when_asks_for_position_16_15()
         {
             //Arrange
-            var coordinate = new Position(20, 20);
+            var coordinate = new Position(16, 15);
             var sut = platformBuilder
                 .WithTopLeftX(5)
                 .WithTopLeftY(5)
@@ -43,13 +43,13 @@ namespace LandingPlatform.Domain.UnitTests
                 .WithBottomRightY(10)
                 .Build();
             //Act
-            var result = sut.IsAbleForLanding(coordinate);
+            var result = sut.GetLandingStatus(coordinate);
             //Assert
             result.Should().Be(OutOfPlatform);
         }
 
         [Fact]
-        public void Should_return_Clash_when_position_has_previously_been_checked_by_another_rocket()
+        public void Return_Clash_when_ask_position_has_previously_been_checked_by_another_rocket()
         {
             //Arrange
             var coordinate = new Position(5, 6);
@@ -60,8 +60,8 @@ namespace LandingPlatform.Domain.UnitTests
                 .WithBottomRightY(10)
                 .Build();
             //Act
-            sut.IsAbleForLanding(coordinate);
-            var result = sut.IsAbleForLanding(coordinate);
+            sut.GetLandingStatus(coordinate);
+            var result = sut.GetLandingStatus(coordinate);
             //Assert
             result.Should().Be(Clash);
         }
@@ -75,7 +75,7 @@ namespace LandingPlatform.Domain.UnitTests
         [InlineData(8, 6)]
         [InlineData(8, 7)]
         [InlineData(8, 8)]
-        public void Should_return_Clash_when_position_is_located_next_to_a_position_that_has_previously_been_checked_by_another_rocket(int x, int y)
+        public void Return_Clash_when_position_is_located_next_to_a_position_that_has_previously_been_checked_by_another_rocket(int x, int y)
         {
             //Arrange
             var previousCoordinate = new Position(7, 7);
@@ -87,25 +87,25 @@ namespace LandingPlatform.Domain.UnitTests
                 .Build();
             var newCoordinate = new Position(x, y);
             //Act
-            sut.IsAbleForLanding(previousCoordinate);
-            var result = sut.IsAbleForLanding(newCoordinate);
+            sut.GetLandingStatus(previousCoordinate);
+            var result = sut.GetLandingStatus(newCoordinate);
             //Assert
             result.Should().Be(Clash);
         }
 
         [Fact]
-        public void Should_throw_argument_null_exception_when_position_is_null()
+        public void Throw_argument_null_exception_when_position_is_null()
         {
             //Arrange
             var sut = platformBuilder.Build();
             //Act
-            Action isItLandable = () => sut.IsAbleForLanding(null);
+            Action landingStatus = () => sut.GetLandingStatus(null);
             //Assert
-            isItLandable.Should().Throw<ArgumentNullException>();
+            landingStatus.Should().Throw<ArgumentNullException>();
         }
 
         [Fact]
-        public void Should_create_Platform()
+        public void Create_Platform()
         {
             //Arrange
             //Act
@@ -115,7 +115,7 @@ namespace LandingPlatform.Domain.UnitTests
         }
 
         [Fact]
-        public void Should_throw_InvalidPlatformSizeException_when_top_left_corner_is_greater_bottom_right_corner()
+        public void Throw_InvalidPlatformSizeException_when_top_left_corner_is_greater_bottom_right_corner()
         {
             //Arrange
             //Act
@@ -130,7 +130,7 @@ namespace LandingPlatform.Domain.UnitTests
         }
 
         [Fact]
-        public void Should_throw_InvalidPlatformSizeException_when_top_left_corner_is_equal_bottom_right_corner()
+        public void Throw_InvalidPlatformSizeException_when_top_left_corner_is_equal_bottom_right_corner()
         {
             //Arrange
             //Act
